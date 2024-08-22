@@ -30,17 +30,37 @@ async function makeAudioHelper() {
     const mediaStreamAudioSourceNode = audioContext.createMediaStreamSource(stream);
     analyserNode = audioContext.createAnalyser();
     mediaStreamAudioSourceNode.connect(analyserNode);
-    console.log('made stream')
+    console.log('Made Stream')
 }
 
 function draw() {
+    video.loadPixels();
+    let asciiImage = ''
+    for (let j = 0; j < video.height; j++) {
+        for (let i = 0; i < video.width; i++) {
+            const pixelIndex = (i + j * video.width) * 4;
+            const r = video.pixels[pixelIndex + 0];
+            const g = video.pixels[pixelIndex + 1];
+            const b = video.pixels[pixelIndex + 2];
+            const avg = Math.floor(r * 0.2126 + g * 0.7152 + b * 0.0722)
+            const charIndex = floor(map(avg, 0, 255, len, 0));
+            const c = density.charAt(charIndex);
+            if (c == ' ') asciiImage += '&nbsp;'
+            else asciiImage += c;
+            asciiImage += '</span>';
+        }
+        asciiImage += '<br/>'
+    }
+    asciiDiv.html(asciiImage);
+    asciiDiv.center('horizontal');
+
     if (pressed && frameCount % 3 == 0) {
         const pcmData = new Float32Array(analyserNode.fftSize);
         analyserNode.getFloatTimeDomainData(pcmData);
         let sumSquares = 0.0;
         for (const amplitude of pcmData) { sumSquares += amplitude*amplitude; }
         let volval = Math.sqrt(sumSquares / pcmData.length) * 100;
-        console.log(volval)
+        // console.log(volval)
         if (volval > volLevels[0]) {
             asciiDiv.style('color', colorArray[Math.floor(Math.random() * colorLen)])
         }
@@ -60,26 +80,6 @@ function draw() {
             asciiDiv.style('color', 'white')
         }
     }
-    video.loadPixels();
-    let asciiImage = ''
-    for (let j = 0; j < video.height; j++) {
-        for (let i = 0; i < video.width; i++) {
-            const pixelIndex = (i + j * video.width) * 4;
-            const r = video.pixels[pixelIndex + 0];
-            const g = video.pixels[pixelIndex + 1];
-            const b = video.pixels[pixelIndex + 2];
-            const avg = Math.floor(r * 0.2126 + g * 0.7152 + b * 0.0722)
-            const charIndex = floor(map(avg, 0, 255, len, 0));
-            const c = density.charAt(charIndex);
-            
-            // asciiImage += '<span style=\"color: ' + colorArray[(i + j) % colorLen] + '\">';
-            if (c == ' ') asciiImage += '&nbsp;'
-            else asciiImage += c;
-            asciiImage += '</span>';
-        }
-        asciiImage += '<br/>'
-    }
-    asciiDiv.html(asciiImage)
 }
 
 function mousePressed() {

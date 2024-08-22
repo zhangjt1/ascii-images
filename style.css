@@ -6,6 +6,7 @@ html, body {
     font-family: 'Courier';
     font-size: 12pt;
     line-height: 10pt;
+    overflow: hidden; /* Hide scrollbars */
   }
   canvas {
     display: block;
