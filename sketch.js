@@ -1,4 +1,5 @@
-const density = 'oIIccvv::++!!~~""..,,                  '
+// const density = 'oIIccvv::++!!~~""..,,                  ';
+const density = '$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,"^`\'.                                                           ';
 const colorArray = ['blue', 'red', 'lime', 'cyan', 'magenta', 'white']
 const len = density.length;
 const colorLen = colorArray.length;
